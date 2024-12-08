@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz Game</title>
+    <style>
+        body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    }
+
+    .topnav {
+    overflow: hidden;
+    background-color: #176B87;
+    }
+
+    .topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    }
+
+    .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+    }
+
+    .topnav a.active {
+    background-color: #ddd;
+    color: black;
+    }
+
+    .topnav .icon {
+    display: none;
+    }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #result {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="topnav" id="myTopnav">
+        <a href="index" >Home</a>
+        <a href="select" class="active">Mental Exercises</a>
+        <a href="/contact">Offline Help</a>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+          <i class="fa fa-bars"></i>
+        </a>
+    </div>
+    <div class="container">
+        <h1>Welcome to the Math Quiz Game!</h1>
+        <p>Instructions and Rules:</p>
+        <ul>
+            <li>You can select the number of questions you want to answer below.</li><br>
+            <li>A math question will be displayed, and you need to provide the correct answer.</li><br>
+            <li>You have a limited number of attempts for each question.</li><br>
+            <li>Try to answer as many questions correctly as possible!</li><br>
+        </ul>
+        <br>
+        <label for="numQuestions">Number of Questions:</label>
+        <input type="number" id="numQuestions" placeholder="Enter number of questions">
+        <div id="question-container" style="display: none;">
+            <p id="question"></p>
+            <input type="text" id="answer" placeholder="Your Answer">
+            <button id="submit">Submit</button>
+        </div>
+        <p id="result"></p>
+        <button id="start">Start Game</button>
+    </div>
+    <script>
+        let numQuestions = 5;
+        let correctAnswers = 0;
+        let currentQuestionNumber = 0;
+
+        const operators = ['+', '-', '*', '/'];
+
+        const startButton = document.getElementById('start');
+        const questionContainer = document.getElementById('question-container');
+        const questionText = document.getElementById('question');
+        const answerInput = document.getElementById('answer');
+        const submitButton = document.getElementById('submit');
+        const resultText = document.getElementById('result');
+        const numQuestionsInput = document.getElementById('numQuestions');
+
+        function generateQuestion() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const operator = operators[Math.floor(Math.random() * operators.length)];
+
+            let answer;
+            switch (operator) {
+                case '+':
+                    answer = num1 + num2;
+                    break;
+                case '-':
+                    answer = num1 - num2;
+                    break;
+                case '*':
+                    answer = num1 * num2;
+                    break;
+                case '/':
+                    answer = Math.floor(num1 / num2);
+                    break;
+            }
+
+            return {
+                question: `What is ${num1} ${operator} ${num2}?`,
+                answer: answer,
+            };
+        }
+
+        function startGame() {
+            numQuestions = parseInt(numQuestionsInput.value);
+            correctAnswers = 0;
+            currentQuestionNumber = 0;
+            numQuestionsInput.disabled = true;
+            startButton.style.display = 'none';
+            questionContainer.style.display = 'block';
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionNumber < numQuestions) {
+                currentQuestionNumber++;
+                resultText.textContent = '';
+                const newQuestion = generateQuestion();
+                currentQuestion = newQuestion;
+                questionText.textContent = newQuestion.question;
+            } else {
+                questionContainer.style.display = 'none';
+                resultText.textContent = `Quiz completed! You got ${correctAnswers} out of ${numQuestions} questions correct.`;
+                startButton.style.display = 'block';
+                numQuestionsInput.disabled = false;
+            }
+        }
+
+        submitButton.addEventListener('click', () => {
+            const userAnswer = parseInt(answerInput.value);
+            if (!isNaN(userAnswer)) {
+                checkAnswer(userAnswer);
+                answerInput.value = '';
+                nextQuestion();
+            }
+        });
+
+        function checkAnswer(userAnswer) {
+            if (userAnswer === currentQuestion.answer) {
+                correctAnswers++;
+                resultText.textContent = 'Correct!';
+            } else {
+                resultText.textContent = `Wrong. The correct answer is ${currentQuestion.answer}`;
+            }
+        }
+
+        startButton.addEventListener('click', startGame);
+    </script>
+</body>
+</html>

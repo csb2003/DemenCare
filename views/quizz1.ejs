@@ -1,0 +1,135 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Quiz Game</title>
+    <link rel="stylesheet" href="quizz1_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="topnav" id="myTopnav">
+        <a href="/index" >Home</a>
+        <a href="/quizz1" class="active">Mental Exercises</a>
+        <a href="quizz">Care and Cure</a>
+        <a href="/contact">Offline Help</a>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+          <i class="fa fa-bars"></i>
+        </a>
+    </div>
+    
+    <div class="container">
+        <h1>Memory Quiz Game</h1>
+        <button id="startButton">Start Game</button>
+        <div id="output"></div>
+        <canvas id="memoryGraph" width="400" height="200"></canvas>
+        <canvas id="memoryPerformanceGraph" width="400" height="200"></canvas>
+
+        <input type="text" id="userInput" style="display:none;">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sequenceLength = 5; // You can adjust the sequence length as needed
+
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            async function displaySequence(sequence, delay) {
+                for (let item of sequence) {
+                    document.getElementById('output').innerText += item + ' ';
+                    await sleep(delay * 1000);
+                    document.getElementById('output').innerText = document.getElementById('output').innerText.slice(0, -1);
+                    await sleep(100);
+                }
+            }
+
+            async function getUserInput() {
+                return new Promise(resolve => {
+                    document.getElementById('userInput').style.display = 'block';
+                    document.getElementById('userInput').focus();
+                    document.getElementById('userInput').addEventListener('keyup', function (event) {
+                        if (event.key === 'Enter') {
+                            resolve(document.getElementById('userInput').value.trim());
+                            document.getElementById('userInput').style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            let gameCount = 0;
+            let correctAnswers = 0;
+            const memoryPerformanceData = [];
+
+            // Function to update the memory performance graph
+            function updateMemoryPerformanceGraph() {
+                const ctx = document.getElementById('memoryPerformanceGraph').getContext('2d');
+
+                const data = {
+                    labels: memoryPerformanceData.map((_, index) => `Game ${index + 1}`),
+                    datasets: [{
+                        label: 'Correct Answers',
+                        data: memoryPerformanceData,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                };
+                console.log("check1")
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: sequenceLength  // Adjust the maximum value as needed
+                            }
+                        }
+                    }
+                };
+                
+                new Chart(ctx, config);
+            }
+
+            document.getElementById('startButton').addEventListener('click', async function () {
+                const delay = 1;  // Adjust the delay (in seconds) to display each item
+
+                // Generate a random sequence of numbers
+                const sequence = Array.from({ length: sequenceLength }, () => String(Math.floor(Math.random() * 9) + 1));
+                correctAnswers = 0;
+                document.getElementById('startButton').style.display = 'none';
+                document.getElementById('output').innerText = 'Memorize the sequence: ';
+
+                // Display the sequence
+                await sleep(1000);  // Wait for 1 second before displaying the sequence
+                await displaySequence(sequence, delay);
+
+                // Get the user's input
+                const userInput = await getUserInput();
+
+                // Check if the user's input matches the sequence
+                if (userInput === sequence.join('')) {
+                    document.getElementById('output').innerText = "Congratulations! You remembered the sequence.";
+                    correctAnswers++;
+                } else {
+                    document.getElementById('output').innerText = "Oops! You got it wrong. The correct sequence was: " + sequence.join('');
+                }
+                // Update game statistics
+                gameCount++;
+                memoryPerformanceData.push(correctAnswers);
+
+                // Update the memory performance graph
+                updateMemoryPerformanceGraph();
+
+                document.getElementById('startButton').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

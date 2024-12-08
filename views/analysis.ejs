@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dementia Type Analysis</title>
+    <style>
+        /* body {
+            font-family: Arial, sans-serif;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+        } */
+
+    body {
+    background: url('brain img.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #333;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    }
+
+    .topnav {
+    overflow: hidden;
+    background-color: #176B87;
+    }
+
+    .topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    }
+
+    .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+    }
+
+    .topnav a.active {
+    background-color: #ddd;
+    color: black;
+    }
+
+    .topnav .icon {
+    display: none;
+    }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+            /* background-color: rgba(255, 255, 255, 0.8); */
+            backdrop-filter: blur(10px); /* Adjust the blur amount as needed */
+            padding: 20px;
+            border-radius: 10px;
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin: 10px 0;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .slider-value {
+            text-align: right;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #result {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="topnav" id="myTopnav">
+        <a href="#home" class="active">Home</a>
+        <a href="/quizz1">Mental Exercises</a>
+        <a href="/contact">Offline Help</a>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+          <i class="fa fa-bars"></i>
+        </a>
+    </div>
+    <div class="container">
+        <h2>Dementia Type Analysis</h2>
+        <form id="diseaseForm">
+            <label>Memory loss that disrupts daily life</label>
+            <input type="range" name="typeA" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Losing track of dates and/or knowing current locations</label>
+            <input type="range" name="typeA" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Wandering and getting lost</label>
+            <input type="range" name="typeA" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Difficulty completing tasks such as bathing</label>
+            <input type="range" name="typeA" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Behaviour or dramatic personality changes such as stealing, increased in sex or deterioration in personal hygiene habits</label>
+            <input type="range" name="typeB" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Loss of interest in normal activities</label>
+            <input type="range" name="typeB" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Hesitation while speaking</label>
+            <input type="range" name="typeB" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Frequent mood changes</label>
+            <input type="range" name="typeB" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Visual Hallucinations</label>
+            <input type="range" name="typeC" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Movement disorders</label>
+            <input type="range" name="typeC" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Poor regulation of body function</label>
+            <input type="range" name="typeC" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+
+            <label>Trouble with sleep</label>
+            <input type="range" name="typeC" min="1" max="4" step="1">
+            <span class="slider-value">1</span>
+            
+            <button type="button" onclick="calculateDisease()">Calculate</button>
+        </form>
+        <p id="result" style="font-size: x-large;"></p>
+    </div>
+
+
+    <script>
+        function calculateDisease() {
+            const typeA = calculateSum("typeA");
+            const typeB = calculateSum("typeB");
+            const typeC = calculateSum("typeC");
+
+            const maxSum = Math.max(typeA, typeB, typeC);
+            let resultText = "";
+
+            if (maxSum === typeA) {
+                resultText = "You may have Alzheimers.";
+            } else if (maxSum === typeB) {
+                resultText = "You may have Frontotemporal.";
+            } else if (maxSum === typeC) {
+                resultText = "You may have Lewi Body.";
+            } else {
+                resultText = "No specific disease type detected.";
+            }
+
+            document.getElementById("result").textContent = resultText;
+        }
+
+        function calculateSum(type) {
+            const sliders = document.querySelectorAll(`input[name=${type}`);
+            let sum = 0;
+            sliders.forEach((slider) => {
+                sum += parseInt(slider.value);
+            });
+            return sum;
+        }
+
+        // Update slider values display
+        const sliderInputs = document.querySelectorAll('input[type="range"]');
+        sliderInputs.forEach((sliderInput) => {
+            const sliderValue = sliderInput.nextElementSibling;
+            sliderInput.addEventListener('input', function () {
+                sliderValue.textContent = this.value;
+            });
+        })
+    </script>
+</body>
+</html>
