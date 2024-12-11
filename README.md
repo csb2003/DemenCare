@@ -1,3 +1,6 @@
+
+https://github.com/user-attachments/assets/0fc2d96b-1800-4f46-a1c8-7884854d0344
+
 Dementia Care Web Application
 This is a web-based application designed to assist users in monitoring dementia-related cognitive skills through quizzes, analysis tools, and interactive features. The app provides a user-friendly interface for patients, caregivers, or medical professionals to track cognitive progress over time.
 
